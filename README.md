@@ -1,37 +1,4 @@
-## Welcome to GitHub Pages
+# 通信
 
-You can use the [editor on GitHub](https://github.com/constant007/blog/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/constant007/blog/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+- [为什么OFDM抗多径](https://github.com/constant007/blog/blob/master/%E4%B8%BA%E4%BB%80%E4%B9%88OFDM%E6%8A%97%E5%A4%9A%E5%BE%84.md)
+- [FFT详解](https://github.com/constant007/blog/blob/master/FFT%E8%AF%A6%E8%A7%A3.md)
