@@ -215,6 +215,6 @@ plot(f,fftshift(abs(x_fft)));
 title('rectwin')
 ```
 
-参考资料：
-http://blog.jobbole.com/70549/
+###参考资料：
+http://blog.jobbole.com/70549/   
 http://www.cnblogs.com/v-July-v/archive/2011/02/20/1983676.html
