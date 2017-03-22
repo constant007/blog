@@ -5,7 +5,7 @@
 pow_pre=rms(data);
 pow_post =rms(fft(data));
 ratio=pow_post/pow_pre;   
-
+```
 ![公式](http://upload-images.jianshu.io/upload_images/1667747-b7bec5a7d0eca95a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 ![Paste_Image.png](http://upload-images.jianshu.io/upload_images/1667747-80b5684415e7dea4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 ``` matlab
