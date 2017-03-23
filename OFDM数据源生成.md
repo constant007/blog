@@ -4,6 +4,7 @@
 - fft点数为`N=2^x`
 - CP 拷贝symbol的后n个Ts插入到symbol的前边
 - ifft变换之后的数据的能量是之前的数据能量的`1/sqrt(N)`;需要乘以`sqrt(N)`,保持前后数据能量相等
+> ifft公式![Paste_Image.png](http://upload-images.jianshu.io/upload_images/1667747-977d4a7a320c50fb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ![OFDM生成步骤](http://upload-images.jianshu.io/upload_images/1667747-ea74cc6c7adcdf22.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
