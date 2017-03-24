@@ -13,6 +13,7 @@ ratio=pow_post/pow_pre;
 ```matlab
 a=fft(data)
 b=data*dftmtx(length(data))
+norm(a-b)
 ```
 
 ![Paste_Image.png](http://upload-images.jianshu.io/upload_images/1667747-87cb46c6e3767142.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
