@@ -9,7 +9,7 @@ ratio=pow_post/pow_pre;
 ```
 - fft的频率分辨率为`fs/N`
 - 第n个点的频率为`Fn=(n-1)fs/N`
-- fft运算本质上是一个矩阵乘法,下面两个运算`a=b`
+- fft和dftmtx计算结果相同，但是fft计算效率更高,下面两个运算结果`a=b`
 ```matlab
 a=fft(data)
 b=data*dftmtx(length(data))
