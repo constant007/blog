@@ -1,5 +1,6 @@
 
 在IQ调制时，由于基带信号的幅度相位或者载波信号相位差不绝对是90度，会产生一个镜像信号。需要进行**IQ补偿**。   
+original为IQ平衡时的频谱。
 ![Paste_Image.png](http://upload-images.jianshu.io/upload_images/1667747-19a74b9bef1c94da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ``` matlab
