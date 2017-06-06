@@ -2,6 +2,7 @@
 % y_fft: amplitude in dB normalized
 % y_power : power
 % y_power_db : power in dB
+% when the return para is not needed replaced by ~
 function [y_fft,y_power,y_power_db,freq]=freq_analyse(data_in,fs)
 y_len = length(data_in);
 fft_data = fft(data_in);
