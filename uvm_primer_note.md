@@ -286,3 +286,148 @@ typedef struct {
  - class extends
  - new
  - super
+
+######################################################################################################################################
+# uvm_primer ch6 多态
+oop有三大好处或者特征
+
+ - 封装
+ - 继承
+ - 多态
+ 
+很多人觉得oop最大的特点应该是继承，这个可能学习深入之后发现，多态才是最大的优点。
+
+给出一个多态的例子
+
+## 非virtual
+virtual具体含义在文章末尾解释
+```java
+class animal;
+   int age=-1;
+
+   function new(int a);
+      age = a;
+   endfunction : new
+
+   function void make_sound();
+      $fatal(1, "Generic animals don't have a sound.");
+   endfunction : make_sound
+
+endclass : anima
+class lion extends animal;
+
+   function new(int age);
+      super.new(age);
+   endfunction : new
+
+   function void make_sound();
+      $display ("The Lion says Roar");
+   endfunction : make_sound
+
+endclass : lion
+
+
+class chicken extends animal;
+
+   function new(int age);
+      super.new(age);
+   endfunction : new
+
+   function void make_sound();
+      $display ("The Chicken says BECAWW");
+   endfunction : make_sound
+
+endclass : chicken
+```
+
+**当function定义成virtual后，调用make_sound()方法时取决于对象的类型，而不是句柄的类型；
+在子类中把父类的make_sound()方法给override了（重写）；**
+
+## virtual
+
+```java
+class animal;
+   int age=-1;
+
+   function new(int a);
+      age = a;
+   endfunction : new
+
+   virtual function void make_sound();
+      $fatal(1, "Generic animals don't have a sound.");
+   endfunction : make_sound
+
+endclass : animal
+
+
+class lion extends animal;
+
+   function new(int age);
+      super.new(age);
+   endfunction : new
+
+   function void make_sound();
+      $display ("The Lion says Roar");
+   endfunction : make_sound
+
+endclass : lion
+
+module top;
+
+
+   initial begin
+   
+      lion   lion_h;
+      animal animal_h;
+      
+      lion_h  = new(15);
+      lion_h.make_sound();
+      $display("The Lion is %0d years old", lion_h.age);
+
+      animal_h = lion_h;  //lion_h 是对象；  animal_h 是一个父类句柄，
+      animal_h.make_sound();  //调用的是lion_h的make_sound()
+      $display("The animal is %0d years old", animal_h.age);
+ 
+   end // initial begin
+
+endmodule : top
+
+```
+
+
+## pure virtual
+
+```java
+virtual class animal;
+   int age=-1;
+
+   function new(int a);
+      age = a;
+   endfunction : new
+//pure virtual function不能有函数体
+   pure virtual function void make_sound();
+
+endclass : animal
+
+
+class lion extends animal;
+
+   function new(int age);
+      super.new(age);
+   endfunction : new
+
+   function void make_sound();
+      $display ("The Lion says Roar");
+   endfunction : make_sound
+
+endclass : lion
+```
+
+ - virtual class 不能实例化 ，只是一个抽象类 只能用作extends
+ - pure virtual function 不能有函数体，需要在子类中去强制重写
+
+## summary
+
+ - virtual function
+ - pure virtual function
+ - virtual class
