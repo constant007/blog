@@ -65,3 +65,121 @@ code中把 激励产生， 代码覆盖检查， scoreboard的三部分功能都
 ## 缺点
  1. 把所有的功能都放进了一个文件，对code将来维护，reuse都不好；
  2. code设计提倡吧单一功能做成一个文件，比如把 激励/scoreboard/coverage检查独立成不同的文件
+ 
+# uvm_primer ch3 BFM
+## 补充一个sv的知识点， interface
+这个是一个类似java的概念，java中也有interface；
+主要在其中定义接口相关的一个信号；还可以在其中使用iniitial block；
+在其中定义和接口强相关的一些函数；下边的函数一个是驱动reset_n的函数；
+一个是驱动 A B  op的函数；
+**interface 可以在面向对象(OO) 中类似做一个声明，然后直接把接口传递到其他module；**
+```java
+interface tinyalu_bfm;
+   import tinyalu_pkg::*;
+
+   byte         unsigned        A;
+   byte         unsigned        B;
+   bit          clk;
+   bit          reset_n;
+   wire [2:0]   op;
+   bit          start;
+   wire         done;
+   wire [15:0]  result;
+   operation_t  op_set;
+
+   assign op = op_set;
+
+   initial begin
+      clk = 0;
+      forever begin
+         #10;
+         clk = ~clk;
+      end
+   end
+
+   task reset_alu();
+      reset_n = 1'b0;
+      @(negedge clk);
+      @(negedge clk);
+      reset_n = 1'b1;
+      start = 1'b0;
+   endtask : reset_alu
+   
+   task send_op(input byte iA, input byte iB, input operation_t iop, 
+			   output shortint alu_result);
+	....
+	endtask
+endinterface
+```
+
+### 传递接口
+
+```java
+module top;
+   tinyalu_bfm    bfm();  //interface
+   tester     tester_i    (bfm);
+   coverage   coverage_i  (bfm);
+   scoreboard scoreboard_i(bfm);
+   
+   tinyalu DUT (.A(bfm.A), .B(bfm.B), .op(bfm.op), 
+                .clk(bfm.clk), .reset_n(bfm.reset_n), 
+                .start(bfm.start), .done(bfm.done), .result(bfm.result));
+endmodule : top
+```
+
+
+```java
+module tester(tinyalu_bfm bfm);  //接口传进来
+   import tinyalu_pkg::*;
+
+   function operation_t get_op();
+      bit [2:0] op_choice;
+      op_choice = $random;
+      case (op_choice)
+        3'b000 : return no_op;
+        3'b001 : return add_op;
+        3'b010 : return and_op;
+        3'b011 : return xor_op;
+        3'b100 : return mul_op;
+        3'b101 : return no_op;
+        3'b110 : return rst_op;
+        3'b111 : return rst_op;
+      endcase // case (op_choice)
+   endfunction : get_op
+
+   function byte get_data();
+      bit [1:0] zero_ones;
+      zero_ones = $random;
+      if (zero_ones == 2'b00)
+        return 8'h00;
+      else if (zero_ones == 2'b11)
+        return 8'hFF;
+      else
+        return $random;
+   endfunction : get_data
+   
+   initial begin
+      byte         unsigned        iA;
+      byte         unsigned        iB;
+      operation_t                  op_set;
+      shortint     result;
+      
+      bfm.reset_alu();   //调用接口中定义的函数
+      repeat (1000) begin : random_loop
+         op_set = get_op();
+         iA = get_data();
+         iB = get_data();
+         bfm.send_op(iA, iB, op_set, result);  //调用接口中定义的函数
+      end : random_loop
+      $stop;
+   end // initial begin
+endmodule : tester
+
+```
+
+把ch2 中在一个文件中的按照功能 ，写成几个文件
+
+ - scoreboard.sv   检查结果
+ - tester.sv   产生激励
+ - coverage.sv  检查覆盖率
+
