@@ -532,3 +532,222 @@ endmodule : top
  - static 变量
  - static方法  ，需要把类中变量保护起来，提供函数来间接访问变量
  - protected 变量供该类及子类访问 类外不可见
+
+###############################################################################################################################
+# ch8 parameterized class
+## 从module位宽参数化引入
+awidth, dwidth 是实现module位宽的参数化，是其可以适用于不同的位宽；
+```java
+module RAM #(awidth, dwidth) (
+			       input wire [awidth-1:0] address, 
+			       inout wire [dwidth-1:0] data,
+			       input we);
+
+   initial $display("awidth: %0d  dwidth %0d",awidth, dwidth);
+   // code to implement RAM
+endmodule // RAM
+```
+
+## 参数化类
+将ch7中的lion_cage抽象化， 使其可以装不同的动物，这样我们就不用为了每一种动物创造一个新的class，实现了代码reuse；
+
+```java
+class animal_cage #(type T);
+
+   protected static T cage[$];
+
+   static function void cage_animal(T l);
+      cage.push_back(l);
+   endfunction : cage_animal
+
+   static function void list_animals();
+      $display("Animals in cage:"); 
+      foreach (cage[i])
+        $display(cage[i].get_name());
+   endfunction : list_animals
+
+endclass : animal_cag
+module top;
+
+
+   initial begin
+      lion   lion_h;
+      chicken  chicken_h;
+      lion_h = new(15, "Mustafa");
+      animal_cage #(lion)::cage_animal(lion_h);  //使用参数化的类
+
+      chicken_h = new(1, "Clucker");
+      animal_cage #(chicken)::cage_animal(chicken_h);
+
+      $display("-- Lions --");
+      animal_cage #(lion)::list_animals();
+      $display("-- Chickens --");
+      animal_cage #(chicken)::list_animals();
+   end
+
+endmodule : top
+
+
+```
+
+## 举一反三：另一种实现方法
+把cage定义成animal类型的队列
+
+ - `protected static animal cage[$];` 可以存储该类和该类的子类的对象；
+ - 但是不能存储和该类无关的对象；`lion1 l1; l1`这个对象放进去会报错；chicken ，lion放进去没事，是因为这两个是animal的子类；
+ >报错信息：
+ #** Error: (vlog-13216) static_methods.sv(161): Arg. 'l' of 'cage_lion':  Illegal assignment to type 'class static_methods_sv_unit.animal' from type 'class static_methods_sv_unit.lion1': Types are not assignment compatible.*
+
+```java
+virtual class animal;
+   protected int age=-1;
+
+
+   function new(int age);
+      set_age(age);
+   endfunction : new
+
+   function void set_age(int a);
+      age = a;
+   endfunction : set_age
+
+   function int get_age();
+      if (age == -1)
+        $fatal(1, "You didn't set the age.");
+      else
+        return age;
+   endfunction : get_age
+
+   pure virtual function void make_sound();
+	 pure virtual function string get_name();
+
+endclass : animal
+
+
+class lion extends animal;
+
+   protected string        name;
+
+   function new(int age, string n);
+      super.new(age);
+      name = n;
+   endfunction : new
+
+   function void make_sound();
+      $display ("%s says Roar", get_name());
+   endfunction : make_sound
+
+   function string get_name();
+      return name;
+   endfunction : get_name
+   
+endclass : lion
+
+class chicken extends animal;
+
+   protected string        name;
+
+   function new(int age, string n);
+      super.new(age);
+      name = n;
+   endfunction : new
+
+   function void make_sound();
+      $display ("%s says cici", get_name());
+   endfunction : make_sound
+
+   function string get_name();
+      return name;
+   endfunction : get_name
+endclass
+
+
+
+virtual class animal1;
+   protected int age=-1;
+
+
+   function new(int age);
+      set_age(age);
+   endfunction : new
+
+   function void set_age(int a);
+      age = a;
+   endfunction : set_age
+
+   function int get_age();
+      if (age == -1)
+        $fatal(1, "You didn't set the age.");
+      else
+        return age;
+   endfunction : get_age
+
+   pure virtual function void make_sound();
+	 pure virtual function string get_name();
+
+endclass : animal1
+
+
+class lion1 extends animal1;
+
+   protected string        name;
+
+   function new(int age, string n);
+      super.new(age);
+      name = n;
+   endfunction : new
+
+   function void make_sound();
+      $display ("%s says Roar1", get_name());
+   endfunction : make_sound
+
+   function string get_name();
+      return name;
+   endfunction : get_name
+   
+endclass : lion1
+
+
+
+class lion_cage;
+
+ //  protected static lion cage[$];
+	 protected static animal cage[$];
+
+   static function void cage_lion(animal l);
+      cage.push_back(l);
+   endfunction : cage_lion
+
+   static function void list_lions();
+      $display("Lions in cage"); 
+      foreach (cage[i])
+        $display(cage[i].get_name());
+   endfunction : list_lions
+
+endclass : lion_cage
+
+   
+
+module top;
+
+
+   initial begin
+      lion   lion_h;
+		  chicken c1;
+		  lion1 l1;
+      lion_h  = new(2,  "Kimba");
+      lion_cage::cage_lion(lion_h);
+      lion_h  = new(3,  "Simba");
+      lion_cage::cage_lion(lion_h);
+      lion_h  = new(15, "Mustafa");
+      lion_cage::cage_lion(lion_h);
+		  c1  =new(1,"c1");
+		  lion_cage::cage_lion(c1);
+		  l1 =new(2,"l1");
+		  lion_cage::cage_lion(l1);
+      lion_cage::list_lions();
+   end
+
+endmodule : top
+```
+
