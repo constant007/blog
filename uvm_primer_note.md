@@ -429,7 +429,9 @@ endclass : lion
 
 ## summary
 
- - virtual function
- - pure virtual function
- - virtual class
+## summary
+
+ - virtual function:调用函数取决于对象类型；普通function，取决于句柄类型；
+ - pure virtual function：不能有函数体
+ - virtual class：不能实例化，相当于java的acstract class 抽象类
 
