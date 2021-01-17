@@ -423,7 +423,8 @@ class lion extends animal;
 endclass : lion
 ```
 
- - virtual class 不能实例化 ，只是一个抽象类 只能用作extends
+ 
+ - virtual class 不能实例化 ，只是一个抽象类 只能用作extends；这个在java中是acstract class；如果实例化就会报错
  - pure virtual function 不能有函数体，需要在子类中去强制重写
 
 ## summary
@@ -431,3 +432,4 @@ endclass : lion
  - virtual function
  - pure virtual function
  - virtual class
+
