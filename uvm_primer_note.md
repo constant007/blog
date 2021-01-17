@@ -433,3 +433,102 @@ endclass : lion
  - pure virtual function：不能有函数体
  - virtual class：不能实例化，相当于java的acstract class 抽象类
 
+####################################################################################################################################
+# static方法和变量
+## 不要使用全局变量
+菜鸟刚开始写代码 时会觉得全局变量比较好用，不管在哪都能访问；
+但是项目变大后，调试起来就是噩梦，如果这个变量不对了，要去track哪里修改的，写错了，比较麻烦；因为他在哪里都能访问，比如100个地方对这个变量复制了，就要去逐一排查；
+
+## 静态变量
+但是全局变量哪都能访问还是有一定优势，所以要一个受控的全局变量；
+static变量就相当于一个受控的全局变量
+
+**static变量在程序刚运行的时候就分配了内存，如果没有static ，则变量在new()构造之后才分配内存**
+```java
+class lion_cage;
+
+    static lion cage[$];  //static 变量cage，是一个队列，队列中的每个成员只能是lion类型的对象；
+   
+endclass : lion_cag
+
+module top;
+
+   initial begin
+      lion   lion_h;
+      lion_h  = new(2,  "Kimba");
+      lion_cage::cage.push_back(lion_h);  //队列的方法
+      lion_h  = new(3,  "Simba");
+      lion_cage::cage.push_back(lion_h);
+      lion_h  = new(15, "Mustafa");
+      lion_cage::cage.push_back(lion_h);
+      $display("Lions in cage"); 
+      foreach (lion_cage::cage[i])
+        $display(lion_cage::cage[i].get_name());  //get_name() 是lion这个class的方法；
+   end
+
+endmodule : to
+```
+
+### 两种访问方法的途径
+
+ 1. 类访问 `::`  不需要实例化该类；
+     `lion_cage::cage.push_back(lion_h);`
+ 2. 对象访问
+     `lion_cage lion_cage_h;`
+     `lion_cage_h = new();`
+     `lion_cage.cage.push_back(lion_h);`
+
+### queue队列
+`.push_back` 是队列的方法
+## 静态方法
+上个代码直接把cage这个静态变量开放给外部访问；这个就有点类似全局变量了，这个是坏习惯；
+应该将静态变量保护起来，`protected` ,然后给外部开放function访问，
+
+```java
+class lion_cage;
+
+   protected static lion cage[$];  //限制访问范围
+
+   static function void cage_lion(lion l);  //供外部调用，来修改cage，不能让外部直接修改
+      cage.push_back(l);
+   endfunction : cage_lion
+
+   static function void list_lions();
+      $display("Lions in cage"); 
+      foreach (cage[i])
+        $display(cage[i].get_name());
+   endfunction : list_lions
+
+endclass : lion_cage
+
+   
+
+module top;
+
+
+   initial begin
+      lion   lion_h;
+      lion_h  = new(2,  "Kimba");
+      lion_cage::cage_lion(lion_h);
+      lion_h  = new(3,  "Simba");
+      lion_cage::cage_lion(lion_h);
+      lion_h  = new(15, "Mustafa");
+      lion_cage::cage_lion(lion_h);
+      lion_cage::list_lions();
+   end
+
+endmodule : top
+```
+
+### protect
+ - local：表示的成员或方法只对该类的对象可见，子类以及类外不可见。
+ - protected: 表示的成员或方法对该类以及子类可见，对类外不可见。
+ - 默认  public: 默认为public，子类和类外皆可访问。
+
+
+
+## summary
+
+ - static 变量
+ - static方法  ，需要把类中变量保护起来，提供函数来间接访问变量
+ - protected 变量供该类及子类访问 类外不可见
