@@ -193,3 +193,96 @@ endmodule : tester
  1. task是消耗仿真时间的，function不能消耗仿真时间
  2. funciton中不能用类似#5  ；@(negdge clk) 这种消耗仿真时间的语句
  3. task中可以调用其他function， function中不能调用task
+
+
+############################################################################################################################################
+# ch4 面向对象的编程OOP
+从第4章开始到第十章 ，介绍oop相关内容，暂时不涉及uvm
+sv是一个oop的语言，尤其是你在验证中使用sv的时候，
+uvm也是建立在sv上的一个框架，这部分内容是理解后边uvm的一个基础。
+
+sv其实更像是verilog+java；c++中有指针的概念，这个java中和sv中没有；
+cpp中分配了内存需要自己去回收内存，java和sv中系统会自动去回收没有用的内存管理。
+
+## oop的好处
+
+ - 复用代码
+ - 代码的维护性更好
+ - 内存管理
+
+### code reuse
+oop封装了数据和方法，你只需要根据文档描述跟使用api一样去调用这些class和里边的的方法就行，可以基于之前的class extends出来更多的功能更加强大的class出来。
+
+### code maintainability
+如果实现相同功能的代码 ， 在工程中有n个copy， 如果发现其中有问题，你需要把这n个copy都去修改， oop之后就只需要修改code本身，其他地方都是调用class或者方法，code本身修改正确，其他使用这个code的地方也会没问题
+
+# ch5 class & extendsion
+## struct
+c中一般使用struct来封装数据
+
+```java
+typedef struct {
+   int         length;
+   int         width;
+} rectangle_struct;
+```
+
+## class
+在class中不仅有数据 还可以有针对这些数据的方法；
+
+```java
+  class rectangle;
+    int length;
+    int width;
+    
+    function new(int l, int w);
+      length = l;
+      width  = w;
+    endfunction
+    
+    function int area();
+      return length * width;
+    endfunction
+  endclass
+```
+
+如何去定义class 以及其中的方法，有很多原则或者rule，可以去找**设计模式**的书籍去参考；
+
+
+## 实例化对象
+```java
+  module top_class ;
+    rectangle rectangle_h;  //声明句柄
+    square    square_h;
+    
+    initial begin
+    //rectangle_h 是实例化出来的 **对象**；
+      rectangle_h = new(.l(50),.w(20));  //构造  或者实例化；实例化出来的
+      $display("rectangle area: %0d", rectangle_h.area());
+      
+      square_h = new(.side(50));
+      $display("square area: %0d", square_h.area());
+      
+    end
+  endmodule
+```
+
+## extends class
+
+```java
+  class square extends rectangle;
+  
+    function new(int side);
+      //调用父类的new()函数去构造
+      super.new(.l(side), .w(side));  //super指的是父类，也就是rectangle
+    endfunction
+  
+  endclass
+```
+
+## summary
+
+ - class定义
+ - class extends
+ - new
+ - super
