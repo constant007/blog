@@ -67,12 +67,16 @@ code中把 激励产生， 代码覆盖检查， scoreboard的三部分功能都
  2. code设计提倡吧单一功能做成一个文件，比如把 激励/scoreboard/coverage检查独立成不同的文件
  
 # uvm_primer ch3 BFM
+把不同功能的code写到一个文件，随着工程增加 代码修改维护复用将来都是难题；
+好的代码应该是解耦合的，弹性的， 可复用的
 ## 补充一个sv的知识点， interface
 这个是一个类似java的概念，java中也有interface；
 主要在其中定义接口相关的一个信号；还可以在其中使用iniitial block；
-在其中定义和接口强相关的一些函数；下边的函数一个是驱动reset_n的函数；
-一个是驱动 A B  op的函数；
+interface在其中定义和接口强相关的一些task，把信号和方法封装起来； 这个时候interface就类似class了；
+下边的task reset_alu();一个是驱动reset_n的task；
+一个是驱动 A B  op的task；
 **interface 可以在面向对象(OO) 中类似做一个声明，然后直接把接口传递到其他module；**
+
 ```java
 interface tinyalu_bfm;
    import tinyalu_pkg::*;
@@ -182,4 +186,3 @@ endmodule : tester
  - scoreboard.sv   检查结果
  - tester.sv   产生激励
  - coverage.sv  检查覆盖率
-
