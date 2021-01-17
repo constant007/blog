@@ -750,4 +750,55 @@ module top;
 
 endmodule : top
 ```
+####################################################################################################################
+# ch9 factory pattern 工厂模式
+programming tricks 称作设计模式；
+工厂模式就是一种设计模式
+工厂模式是一个static 方法
+
+## 工厂模式例子
+<font color=blue size=5>**没有看懂工厂模式的优势，使用工厂模式还是要更改`make_animal`这个funciton；如果要构造一个狗的对象的话** </font>
+```java
+class animal_factory;
+
+   static function animal make_animal(string species, 
+                                      int age, string name);
+      chicken chicken;
+      lion lion;
+      case (species)
+        "lion" : begin
+           lion = new(age, name);
+           return lion;
+        end
+
+        "chicken" : begin
+           chicken = new(age, name);
+           return chicken;
+        end
+
+        default : 
+          $fatal (1, {"No such animal: ", species});
+        
+      endcase // case (species)
+      
+   endfunction : make_animal
+   
+endclass : animal_factor
+....
+      animal animal_h;
+      
+      animal_h = animal_factory::make_animal("lion", 15, "Mustafa")； //使用工厂模式  
+```
+## 强制类型转换
+`thorn_in_paw`这个在animal类中没有定义，直接使用`animal_h.thorn_in_paw` 会报错
+`cast_ok = $cast(lion_h, animal_h);`
+```java
+
+cast_ok = $cast(lion_h, animal_h);
+      if ( ! cast_ok) 
+        $fatal(1, "Failed to cast animal_h to lion_h");
+       //thorn_in_paw这个在animal类中没有定义，直接使用animal_h.thorn_in_paw 会报错
+      if (lion_h.thorn_in_paw) $display("He looks angry!"); 
+      animal_cage#(lion)::cage_animal(lion_h);
+```
 
