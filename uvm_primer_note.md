@@ -520,7 +520,7 @@ module top;
 endmodule : top
 ```
 
-### protect
+### 变量作用范围限定
  - local：表示的成员或方法只对该类的对象可见，子类以及类外不可见。
  - protected: 表示的成员或方法对该类以及子类可见，对类外不可见。
  - 默认  public: 默认为public，子类和类外皆可访问。
